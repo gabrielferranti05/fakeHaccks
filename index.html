@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wird geladen …</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: innocent loading page -> hard cut to a black takeover (log, skull, REC, location, encryption grid, countdown) -> dead screen with tiny note */
+:root {
+  --paper: #f6f7f9;
+  --ink: #3b4250;
+  --bg: #000;
+  --fg: #6dff9c;
+  --amber: #ffb547;
+  --red: #ff2e45;
+  --blood: #2a0006;
+  --dim: #5a5f66;
+  --font-display: "VT323", "Courier New", monospace;
+  --font-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-mono); font-size: 13px; overflow: hidden; }
+.scr {
+  position: fixed; inset: 0; box-sizing: border-box; overflow: hidden;
+  padding-block: max(18px, env(safe-area-inset-top, 0px)) max(18px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* 1 — harmless looking loader */
+#load { background: var(--paper); color: var(--ink); display: grid; place-items: center; font-family: system-ui, sans-serif; }
+#load .w { display: grid; justify-items: center; gap: 14px; font-size: 14px; }
+.spin { width: 34px; height: 34px; border: 3px solid #d5d9e0; border-top-color: #4a6cf7; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 2 — takeover */
+#hack { background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; gap: 12px; }
+#hack::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0,0,0,.28) 2px 3px); }
+.top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; }
+.rec { color: var(--red); font-weight: 700; display: flex; gap: 8px; align-items: center; font-variant-numeric: tabular-nums; }
+.rec::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--red); box-shadow: 0 0 10px var(--red); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.loc { color: var(--amber); }
+.mid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; min-height: 0; }
+.log { white-space: pre-wrap; word-break: break-all; line-height: 1.45; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; min-height: 0; text-shadow: 0 0 4px rgba(109,255,156,.5); font-size: 12px; }
+.log b { color: var(--amber); font-weight: 700; }
+.log .r { color: var(--red); }
+.center { display: grid; align-content: center; justify-items: center; gap: 10px; text-align: center; min-height: 0; }
+.skull { margin: 0; color: var(--red); font-size: clamp(5px, 1.25vw, 11px); line-height: 1.05; text-shadow: 0 0 10px var(--red); }
+.glitch { position: relative; font-family: var(--font-display); font-size: clamp(2.2rem, 7vw, 5.4rem); line-height: .95; color: #fff; letter-spacing: .03em; text-wrap: balance; }
+.glitch::before, .glitch::after { content: attr(data-text); position: absolute; inset: 0; }
+.glitch::before { color: var(--red); transform: translate(-3px, 0); clip-path: inset(0 0 55% 0); animation: g1 .6s steps(2) infinite; mix-blend-mode: screen; }
+.glitch::after { color: #2ef2ff; transform: translate(3px, 0); clip-path: inset(50% 0 0 0); animation: g2 .5s steps(2) infinite; mix-blend-mode: screen; }
+@keyframes g1 { 50% { transform: translate(4px, -2px); clip-path: inset(20% 0 40% 0); } }
+@keyframes g2 { 50% { transform: translate(-4px, 2px); clip-path: inset(60% 0 5% 0); } }
+.sub { color: var(--red); font-size: 13px; letter-spacing: .12em; }
+.enc { display: grid; grid-template-columns: repeat(auto-fill, minmax(16px, 1fr)); gap: 3px; width: min(420px, 100%); }
+.enc i { aspect-ratio: 1; background: #10241a; }
+.enc i.on { background: var(--red); box-shadow: 0 0 6px var(--red); }
+.encl { font-size: 12px; color: var(--amber); font-variant-numeric: tabular-nums; }
+.bottom { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.count { font-family: var(--font-display); font-size: clamp(1.8rem, 6vw, 3.4rem); color: #fff; text-shadow: 0 0 14px var(--red); font-variant-numeric: tabular-nums; }
+.keys { color: var(--dim); font-size: 11px; font-variant-numeric: tabular-nums; }
+#hack.panic { animation: pulse .4s steps(1) infinite, shake .16s infinite; }
+@keyframes pulse { 50% { background: var(--blood); } }
+@keyframes shake { 25% { transform: translate(4px,-3px); } 50% { transform: translate(-4px,2px); } 75% { transform: translate(3px,3px); } }
+.cut { animation: cut .25s steps(2) 2; }
+@keyframes cut { 50% { filter: invert(1) contrast(3); } }
+
+/* 3 — dead screen */
+#dead { background: var(--bg); display: grid; place-items: center; }
+#dead .msg { font-family: var(--font-display); color: #3a3a3a; font-size: clamp(1.6rem, 5vw, 2.6rem); letter-spacing: .1em; text-align: center; }
+#dead .tiny {
+  position: absolute; left: 0; right: 0; text-align: center; color: #4a4a4a; font-size: 9px; letter-spacing: .02em;
+  bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+@media (max-width: 700px) {
+  .mid { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+  .log { order: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #hack.panic, .glitch::before, .glitch::after, .rec::before, .cut, .spin { animation: none; }
+  #hack.panic { background: var(--blood); }
+}
+</style>
+
+</head>
+<body>
+<div class="scr" id="load">
+  <div class="w"><div class="spin"></div><div>Seite wird geladen …</div></div>
+</div>
+
+<div class="scr" id="hack" hidden>
+  <div class="top">
+    <span class="rec" id="rec">REC 00:00 · KAMERA</span>
+    <span class="loc" id="loc">Standort wird ermittelt …</span>
+  </div>
+  <div class="mid">
+    <div class="log" id="log"></div>
+    <div class="center">
+<pre class="skull">        ▄▄████████▄▄
+      ▄██████████████▄
+     ████████████████████
+    ██████████████████████
+    ████▀▀  ▀████▀  ▀▀████
+    ███   ●   ██   ●   ███
+    ████▄▄  ▄█▀▀█▄  ▄▄████
+     ▀██████▀    ▀██████▀
+       ███ █ █ █ █ ███
+        ▀█▄█▄█▄█▄█▄█▀</pre>
+      <div class="glitch" id="title" data-text="DEIN GERÄT GEHÖRT JETZT UNS">DEIN GERÄT GEHÖRT JETZT UNS</div>
+      <div class="sub" id="sub">ALLE DATEIEN WERDEN VERSCHLÜSSELT</div>
+      <div class="enc" id="enc"></div>
+      <div class="encl" id="encl">0 von 0 Dateien</div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="count" id="count"></div>
+    <div class="keys" id="keys"></div>
+  </div>
+</div>
+
+<div class="scr" id="dead" hidden>
+  <div class="msg">VERBINDUNG GETRENNT</div>
+  <div class="tiny">Nur ein Scherz. Nichts davon war echt, dein Gerät ist sicher und es wurden keine Daten gesendet.</div>
+</div>
+
+<script>
+// Everything shown comes from the visitor's own browser and never leaves it.
+const ua = navigator.userAgent;
+const os = /Windows/.test(ua) ? 'Windows' : /iPhone|iPad/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android'
+  : /Mac OS X/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'Unbekannt';
+const br = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox'
+  : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Browser';
+let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+const city = tz.includes('/') ? tz.split('/').pop().replace(/_/g, ' ') : 'Unbekannt';
+const $ = id => document.getElementById(id);
+const rnd = n => Math.random() * n | 0;
+const pick = a => a[rnd(a.length)];
+const T = [];
+const every = (ms, f) => { const t = setInterval(f, ms); T.push(t); return t; };
+
+const root = os === 'Windows' ? 'C:\\Users\\Benutzer\\' : os === 'macOS' ? '/Users/benutzer/' : '/sdcard/';
+const files = ['Bilder/IMG_', 'DCIM/Camera/VID_', 'Dokumente/Passwoerter_', 'WhatsApp/Media/IMG-', 'Downloads/Ausweis_', 'Desktop/Privat_', 'Snapchat/Memories/', 'Notizen/Geheim_'];
+const exts = ['.jpg', '.mp4', '.txt', '.pdf', '.png', '.heic'];
+
+function line(html) {
+  const d = document.createElement('div'); d.innerHTML = html; $('log').appendChild(d);
+  while ($('log').children.length > 60) $('log').firstChild.remove();
+}
+
+// Phase 1: looks like a normal page loading
+setTimeout(start, 700);
+
+function start() {
+  $('load').hidden = true; $('hack').hidden = false;
+  $('hack').classList.add('cut');
+  const ip = [10 + rnd(180), rnd(255), rnd(255), 2 + rnd(250)].join('.');
+  const intro = [
+    '<span class="r">!! EINDRINGLING VERBUNDEN !!</span>',
+    '> Gerät: <b>' + os + '</b> · <b>' + br + '</b>',
+    '> Bildschirm: <b>' + screen.width + '×' + screen.height + '</b> · Kerne: <b>' + (navigator.hardwareConcurrency || '?') + '</b>',
+    '> Sprache: <b>' + (navigator.language || '?') + '</b>',
+    '> IP: <b>' + ip + '</b>',
+    '> Standort: <b>' + city + '</b>',
+    '> Ortszeit: <b>' + new Date().toLocaleTimeString('de-DE') + '</b>',
+    '> Kamera: <b>AN</b> · Mikrofon: <b>AN</b>',
+    '> Root-Rechte: <b>ERHALTEN</b>',
+  ];
+  let i = 0;
+  const s = every(45, () => { line(intro[i++]); if (i === intro.length) { clearInterval(s); panic(); } });
+
+  // Fake webcam timer
+  let sec = 0;
+  every(1000, () => { sec++; $('rec').textContent = 'REC 00:' + String(sec).padStart(2, '0') + ' · KAMERA'; });
+
+  // Location "zooming in"
+  let step = 0;
+  const locs = ['Standort wird ermittelt …', 'Land gefunden …', 'Stadt: ' + city, 'Stadt: ' + city + ' · Genauigkeit 12 m'];
+  every(300, () => { if (step < locs.length) $('loc').textContent = locs[step++]; });
+}
+
+function panic() {
+  $('hack').classList.remove('cut'); $('hack').classList.add('panic');
+
+  // File flood
+  every(20, () => line('verschlüssle ' + root + pick(files) + (1000 + rnd(9000)) + pick(exts) + ' <b>✓</b>'));
+
+  // Encryption grid
+  const N = 96;
+  $('enc').innerHTML = '<i></i>'.repeat(N);
+  const cells = [...$('enc').children];
+  let done = 0; const total = 2000 + rnd(6000);
+  every(50, () => {
+    for (let k = 0; k < 3 && done < N; k++) { cells[done++].className = 'on'; }
+    $('encl').textContent = Math.min(total, Math.round(total * done / N)) + ' von ' + total + ' Dateien verschlüsselt';
+  });
+
+  // Fake keystroke capture
+  every(160, () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    $('keys').textContent = 'Tastatur mitgeschnitten: ' + Array.from({ length: 18 }, () => chars[rnd(chars.length)]).join('');
+  });
+
+  // Swap the headline a few times
+  const heads = ['DEIN GERÄT GEHÖRT JETZT UNS', 'WIR SEHEN DICH', 'ALLE DATEIEN KOPIERT', 'DEIN GERÄT GEHÖRT JETZT UNS'];
+  let h = 0;
+  every(800, () => { h = (h + 1) % heads.length; $('title').textContent = heads[h]; $('title').dataset.text = heads[h]; });
+
+  // Countdown
+  let ms = 5000;
+  every(100, () => {
+    ms -= 100;
+    $('count').textContent = 'SELBSTZERSTÖRUNG IN ' + (Math.max(0, ms) / 1000).toFixed(1) + ' s';
+    if (ms <= 0) end();
+  });
+}
+
+function end() {
+  T.forEach(clearInterval);
+  $('hack').hidden = true; $('dead').hidden = false;
+}
+</script>
+</body>
+</html>
